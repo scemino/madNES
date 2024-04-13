@@ -10,7 +10,7 @@
 #include "common.h"
 #include "chips/clk.h"
 #include "chips/m6502.h"
-#include "chips/r2c02.h"
+#include "r2c02.h"
 #include "nes.h"
 #if defined(CHIPS_USE_UI)
     #define UI_DBG_USE_M6502
@@ -23,7 +23,7 @@
     #include "ui/ui_dbg.h"
     #include "ui/ui_m6502.h"
     #include "ui/ui_snapshot.h"
-    #include "ui/ui_nes.h"
+    #include "ui_nes.h"
 #endif
 
 typedef struct {

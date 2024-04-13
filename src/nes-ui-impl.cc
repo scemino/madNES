@@ -3,10 +3,10 @@
 */
 #include "chips/chips_common.h"
 #include "chips/m6502.h"
-#include "chips/r2c02.h"
+#include "r2c02.h"
 #include "chips/clk.h"
 #include "chips/mem.h"
-#include "systems/nes.h"
+#include "nes.h"
 #define UI_DASM_USE_M6502
 #define UI_DBG_USE_M6502
 #define CHIPS_UTIL_IMPL
@@ -22,4 +22,4 @@
 #include "ui/ui_dbg.h"
 #include "ui/ui_m6502.h"
 #include "ui/ui_snapshot.h"
-#include "ui/ui_nes.h"
+#include "ui_nes.h"
