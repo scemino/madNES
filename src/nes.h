@@ -518,11 +518,11 @@ bool nes_insert_cart(nes_t* sys, chips_range_t data) {
     // read PRG-ROM (16KB banks)
     const size_t prg_size = hdr->prg_page_count * 0x4000;
     memcpy(&sys->cart.header, hdr, sizeof(nes_cartridge_header));
-    memcpy(sys->cart.rom, data.ptr + sizeof(nes_cartridge_header), prg_size);
+    memcpy(sys->cart.rom, ((uint8_t*)data.ptr) + sizeof(nes_cartridge_header), prg_size);
 
     // read CHR-ROM (8KB banks)
     if(hdr->tile_page_count > 0) {
-        memcpy(sys->cart.character_ram, data.ptr + sizeof(nes_cartridge_header) + prg_size, hdr->tile_page_count * 0x2000);
+        memcpy(sys->cart.character_ram, ((uint8_t*)data.ptr) + sizeof(nes_cartridge_header) + prg_size, hdr->tile_page_count * 0x2000);
     }
 
     if(_nes_use_mapper(sys, mapper_num)) {

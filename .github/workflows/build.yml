@@ -11,8 +11,6 @@ jobs:
           run:  python3 fips build win64-vstudio-debug
         - name: win64-vstudio-release
           run:  python3 fips build win64-vstudio-release
-        - name: madNES win64-vstudio-debug
-          run:  python3 fips run madNES win64-vstudio-debug
     mac:
         runs-on: macos-latest
         steps:
@@ -21,8 +19,6 @@ jobs:
           run:  python3 fips build osx-make-debug
         - name: osx-make-release
           run:  python3 fips build osx-make-release
-        - name: madNES osx-make-debug
-          run:  python3 fips run madNES osx-make-debug
     linux:
         runs-on: ubuntu-latest
         steps:
@@ -35,8 +31,6 @@ jobs:
           run:  python3 fips build linux-make-debug
         - name: linux-make-release
           run:  python3 fips build linux-make-release
-        - name: madNES linux-make-debug
-          run:  python3 fips run madNES linux-make-debug
     emscripten:
         runs-on: ubuntu-latest
         steps:
