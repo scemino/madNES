@@ -11,7 +11,7 @@
 #include "chips/clk.h"
 #include "chips/m6502.h"
 #include "chips/r2c02.h"
-#include "systems/nes.h"
+#include "nes.h"
 #if defined(CHIPS_USE_UI)
     #define UI_DBG_USE_M6502
     #include "ui.h"
