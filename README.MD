@@ -5,7 +5,7 @@ A NES emulator for macOS, Linux, Windows and more.
 ## Compiling
 
 ```shell
-./fips set target nes-ui
+./fips set target madNES
 ./fips gen
 ./fips build
 ./fips run

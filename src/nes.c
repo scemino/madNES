@@ -285,7 +285,7 @@ sapp_desc sokol_main(int argc, char* argv[]) {
         .cleanup_cb = app_cleanup,
         .width = 800,
         .height = 600,
-        .window_title = "NES",
+        .window_title = "madNES",
         .icon.sokol_default = true,
         .enable_dragndrop = true,
         .logger.func = slog_func,
