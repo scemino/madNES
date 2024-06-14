@@ -55,8 +55,11 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdalign.h>
-#define _USE_MATH_DEFINES
-#include <math.h>
+#include <math.h>   // M_PI, sqrtf, sinf, cosf
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846264338327
+#endif
 
 #ifdef __cplusplus
 extern "C" {

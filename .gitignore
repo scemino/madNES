@@ -8,3 +8,4 @@ fips-files/deploy/
 .idea/
 CMakeUserPresets.json
 #<fips
+common/shaders.glsl.h

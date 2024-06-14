@@ -1,7 +1,7 @@
 #pragma once
 #include "sokol_app.h"
 #include "sokol_gfx.h"
-#include "sokol_imgui.h"
+#include "util/sokol_imgui.h"
 #include "chips/chips_common.h"
 
 #ifdef __cplusplus

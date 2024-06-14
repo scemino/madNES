@@ -11,6 +11,7 @@ imports:
     git: https://github.com/floooh/chips
   sokol:
     git: https://github.com/floooh/sokol
+    rev: bfaccb35836005d70cd38eb3036774e1103795f5
   sokol-tools-bin:
     git: https://github.com/floooh/sokol-tools-bin
   fips-utils:

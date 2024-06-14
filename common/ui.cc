@@ -7,7 +7,7 @@
 #include "sokol_time.h"
 #include "imgui.h"
 #define SOKOL_IMGUI_IMPL
-#include "sokol_imgui.h"
+#include "util/sokol_imgui.h"
 #include "gfx.h"
 #include <stdlib.h> // calloc
 

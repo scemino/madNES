@@ -4,11 +4,19 @@ A NES emulator for macOS, Linux, Windows and more.
 
 ## Compiling
 
+With [fips](https://floooh.github.io/fips/)
+
 ```shell
 ./fips set target madNES
 ./fips gen
 ./fips build
 ./fips run
+```
+
+With [zig](https://ziglang.org/)
+
+```shell
+zig build run
 ```
 
 ## Controller
