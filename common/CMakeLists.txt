@@ -20,7 +20,7 @@ else()
     if (FIPS_IOS)
         set(slang "glsl300es")
     else()
-        set(slang "glsl330")
+        set(slang "glsl410")
     endif()
 endif()
 
