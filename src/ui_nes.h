@@ -72,10 +72,10 @@ typedef struct {
     bool open;
     bool mode16;
     ui_dbg_texture_callbacks_t texture_cbs;
-    void* tex_pattern_tables[2];
-    void* tex_name_tables;
-    void* tex_name_table_tooltip;
-    void* tex_sprites;
+    ui_texture_t tex_pattern_tables[2];
+    ui_texture_t tex_name_tables;
+    ui_texture_t tex_name_table_tooltip;
+    ui_texture_t tex_sprites;
     int pattern_pal_index;
     uint32_t pixel_buffer[512*512];
 } ui_nes_video_t;
@@ -161,9 +161,9 @@ static void _ui_nes_draw_menu(ui_nes_t* ui) {
         }
         if (ImGui::BeginMenu("Debug")) {
             ImGui::MenuItem("CPU Debugger", 0, &ui->dbg.ui.open);
-            ImGui::MenuItem("Breakpoints", 0, &ui->dbg.ui.show_breakpoints);
-            ImGui::MenuItem("Execution History", 0, &ui->dbg.ui.show_history);
-            ImGui::MenuItem("Memory Heatmap", 0, &ui->dbg.ui.show_heatmap);
+            ImGui::MenuItem("Breakpoints", 0, &ui->dbg.ui.breakpoints.open);
+            ImGui::MenuItem("Execution History", 0, &ui->dbg.ui.history.open);
+            ImGui::MenuItem("Memory Heatmap", 0, &ui->dbg.ui.heatmap.open);
             if (ImGui::BeginMenu("Memory Editor")) {
                 ImGui::MenuItem("Window #1", 0, &ui->memedit[0].open);
                 ImGui::MenuItem("Window #2", 0, &ui->memedit[1].open);

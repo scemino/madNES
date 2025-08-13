@@ -11,6 +11,7 @@
 #include "shaders.glsl.h"
 #include <assert.h>
 #include <stdlib.h> // malloc/free
+#include <string.h> // memset
 
 #define GFX_DEF(v,def) (v?v:def)
 
@@ -207,7 +208,7 @@ static void gfx_init_images_and_pass(void) {
         .width = state.fb.dim.width,
         .height = state.fb.dim.height,
         .pixel_format = state.fb.paletted ? SG_PIXELFORMAT_R8 : SG_PIXELFORMAT_RGBA8,
-        .usage = SG_USAGE_STREAM,
+        .usage.stream_update = true
     });
 
     // a sampler for sampling the emulators raw pixel data
@@ -221,7 +222,7 @@ static void gfx_init_images_and_pass(void) {
     // 2x-upscaling render target texture, sampler and pass
     assert((state.offscreen.view.width > 0) && (state.offscreen.view.height > 0));
     state.offscreen.img = sg_make_image(&(sg_image_desc){
-        .render_target = true,
+        .usage.render_attachment = true,
         .width = 2 * state.offscreen.view.width,
         .height = 2 * state.offscreen.view.height,
         .sample_count = 1,
@@ -457,13 +458,11 @@ void gfx_draw(chips_display_info_t display_info) {
     sg_apply_pipeline(state.offscreen.pip);
     sg_apply_bindings(&(sg_bindings){
         .vertex_buffers[0] = state.offscreen.vbuf,
-        .fs = {
-            .images = {
-                [SLOT_fb_tex] = state.fb.img,
-                [SLOT_pal_tex] = state.fb.pal_img,
-            },
-            .samplers[SLOT_smp] = state.fb.smp,
-        }
+        .images = {
+            [IMG_fb_tex] = state.fb.img,
+            [IMG_pal_tex] = state.fb.pal_img,
+        },
+        .samplers[SMP_smp] = state.fb.smp,
     });
     const offscreen_vs_params_t vs_params = {
         .uv_offset = {
@@ -475,7 +474,7 @@ void gfx_draw(chips_display_info_t display_info) {
             (float)state.offscreen.view.height / (float)state.fb.dim.height
         }
     };
-    sg_apply_uniforms(SG_SHADERSTAGE_VS, SLOT_offscreen_vs_params, &SG_RANGE(vs_params));
+    sg_apply_uniforms(UB_offscreen_vs_params, &SG_RANGE(vs_params));
     sg_draw(0, 4, 1);
     sg_end_pass();
 
@@ -502,10 +501,8 @@ void gfx_draw(chips_display_info_t display_info) {
     sg_apply_pipeline(state.display.pip);
     sg_apply_bindings(&(sg_bindings){
         .vertex_buffers[0] = state.display.vbuf,
-        .fs = {
-            .images[SLOT_tex] = state.offscreen.img,
-            .samplers[SLOT_smp] = state.offscreen.smp,
-        }
+        .images[IMG_tex] = state.offscreen.img,
+        .samplers[SMP_smp] = state.offscreen.smp,
     });
     sg_draw(0, 4, 1);
     sg_apply_viewport(0, 0, display.width, display.height, true);

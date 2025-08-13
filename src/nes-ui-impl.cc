@@ -13,8 +13,10 @@
 #include "util/m6502dasm.h"
 #define CHIPS_UI_IMPL
 #include "imgui.h"
-#include "ui/ui_audio.h"
+#include "imgui_internal.h"
+#include "ui/ui_settings.h"
 #include "ui/ui_util.h"
+#include "ui/ui_audio.h"
 #include "ui/ui_chip.h"
 #include "ui/ui_memedit.h"
 #include "ui/ui_memmap.h"
