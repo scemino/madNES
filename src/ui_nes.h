@@ -107,14 +107,19 @@ typedef struct {
     ui_nes_cartridge_t cartridge;
     ui_nes_input_t input;
     ui_nes_video_t video;
+    ui_display_t display;
     ui_r2c02_t ppu;
     ui_dbg_t dbg;
     ui_snapshot_t snapshot;
 } ui_nes_t;
 
+typedef struct {
+    ui_display_frame_t display;
+} ui_nes_frame_t;
+
 void ui_nes_init(ui_nes_t* ui, const ui_nes_desc_t* desc);
 void ui_nes_discard(ui_nes_t* ui);
-void ui_nes_draw(ui_nes_t* ui);
+void ui_nes_draw(ui_nes_t* ui, const ui_nes_frame_t* frame);
 chips_debug_t ui_nes_get_debug(ui_nes_t* ui);
 
 #ifdef __cplusplus
@@ -350,6 +355,14 @@ void ui_nes_init(ui_nes_t* ui, const ui_nes_desc_t* ui_desc) {
     }
     x += dx; y += dy;
     {
+        ui_display_desc_t desc = {0};
+        desc.title = "Display";
+        desc.x = x;
+        desc.y = y;
+        ui_display_init(&ui->display, &desc);
+    }
+    x += dx; y += dy;
+    {
         ui_memedit_desc_t desc = {0};
         for (int i = 0; i < _UI_NES_MEMLAYER_NUM; i++) {
             desc.layers[i] = _ui_nes_memlayer_names[i];
@@ -384,11 +397,11 @@ void ui_nes_init(ui_nes_t* ui, const ui_nes_desc_t* ui_desc) {
         ui->video.y = 20;
         ui->video.w = 562;
         ui->video.h = 568;
-        ui->video.tex_pattern_tables[0] = ui->video.texture_cbs.create_cb(128, 128);
-        ui->video.tex_pattern_tables[1] = ui->video.texture_cbs.create_cb(128, 128);
-        ui->video.tex_name_table_tooltip = ui->video.texture_cbs.create_cb(8, 8);
-        ui->video.tex_name_tables = ui->video.texture_cbs.create_cb(512, 512);
-        ui->video.tex_sprites = ui->video.texture_cbs.create_cb(64, 64);
+        ui->video.tex_pattern_tables[0] = ui->video.texture_cbs.create_cb(128, 128, "pattern0-128x128");
+        ui->video.tex_pattern_tables[1] = ui->video.texture_cbs.create_cb(128, 128, "pattern1-128x128");
+        ui->video.tex_name_table_tooltip = ui->video.texture_cbs.create_cb(8, 8, "name-table-tooltip-8x8");
+        ui->video.tex_name_tables = ui->video.texture_cbs.create_cb(512, 512, "name-tables-512x512");
+        ui->video.tex_sprites = ui->video.texture_cbs.create_cb(64, 64, "sprites-64x64");
     }
     {
         ui->cartridge.x = 10;
@@ -413,6 +426,7 @@ void ui_nes_discard(ui_nes_t* ui) {
     ui->video.texture_cbs.destroy_cb(ui->video.tex_sprites);
     ui_m6502_discard(&ui->cpu);
     ui_audio_discard(&ui->audio);
+    ui_display_discard(&ui->display);
     for (int i = 0; i < 4; i++) {
         ui_memedit_discard(&ui->memedit[i]);
         ui_dasm_discard(&ui->dasm[i]);
@@ -804,11 +818,12 @@ void _ui_r2c02_draw(ui_nes_t* ui) {
     ImGui::End();
 }
 
-void ui_nes_draw(ui_nes_t* ui) {
-    CHIPS_ASSERT(ui && ui->nes);
+void ui_nes_draw(ui_nes_t* ui, const ui_nes_frame_t* frame) {
+    CHIPS_ASSERT(ui && ui->nes && frame);
     _ui_nes_draw_menu(ui);
     ui_m6502_draw(&ui->cpu);
     ui_audio_draw(&ui->audio, ui->nes->audio.sample_pos);
+    ui_display_draw(&ui->display, &frame->display);
     for (int i = 0; i < 4; i++) {
         ui_memedit_draw(&ui->memedit[i]);
         ui_dasm_draw(&ui->dasm[i]);

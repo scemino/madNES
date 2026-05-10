@@ -44,7 +44,7 @@ static struct {
 } state;
 
 #ifdef CHIPS_USE_UI
-static void ui_draw_cb(void);
+static void ui_draw_cb(const ui_draw_info_t* draw_info);
 static bool ui_load_snapshot(size_t slot_index);
 static void ui_save_snapshot(size_t slot_index);
 #endif
@@ -72,6 +72,7 @@ static void app_init(void) {
     });
     gfx_init(&(gfx_desc_t){
     #ifdef CHIPS_USE_UI
+    .init_extra_cb = ui_preinit,
     .draw_extra_cb = ui_draw,
     #endif
     .display_info = nes_display_info(&state.nes),
@@ -81,7 +82,10 @@ static void app_init(void) {
     fs_init();
 
 #ifdef CHIPS_USE_UI
-    ui_init(ui_draw_cb);
+    ui_init(&(ui_desc_t){
+        .draw_cb = ui_draw_cb,
+        .imgui_ini_key = "scemino.nes",
+    });
     ui_nes_init(&state.ui, &(ui_nes_desc_t){
         .nes = &state.nes,
         .dbg_texture = {
@@ -108,7 +112,7 @@ static void app_init(void) {
 #endif
 
     if (sargs_exists("file")) {
-        fs_start_load_file(FS_SLOT_IMAGE, sargs_value("file"));
+        fs_load_file_async(FS_CHANNEL_IMAGES, sargs_value("file"));
     }
 }
 
@@ -186,11 +190,11 @@ static void draw_status_bar(void) {
 static void handle_file_loading(void) {
     fs_dowork();
     const uint32_t load_delay_frames = 120;
-    if (fs_success(FS_SLOT_IMAGE) && clock_frame_count_60hz() > load_delay_frames) {
+    if (fs_success(FS_CHANNEL_IMAGES) && clock_frame_count_60hz() > load_delay_frames) {
 
         bool load_success = false;
-        if (fs_ext(FS_SLOT_IMAGE, "nes")) {
-            load_success = nes_insert_cart(&state.nes, fs_data(FS_SLOT_IMAGE));
+        if (fs_ext(FS_CHANNEL_IMAGES, "nes")) {
+            load_success = nes_insert_cart(&state.nes, fs_data(FS_CHANNEL_IMAGES));
         }
         if (load_success) {
             if (clock_frame_count_60hz() > (load_delay_frames + 10)) {
@@ -200,14 +204,14 @@ static void handle_file_loading(void) {
         else {
             gfx_flash_error();
         }
-        fs_reset(FS_SLOT_IMAGE);
+        fs_reset(FS_CHANNEL_IMAGES);
     }
 }
 
 void app_input(const sapp_event* event) {
     // accept dropped files also when ImGui grabs input
     if (event->type == SAPP_EVENTTYPE_FILES_DROPPED) {
-        fs_start_load_dropped_file(FS_SLOT_IMAGE);
+        fs_load_dropped_file_async(FS_CHANNEL_IMAGES);
     }
 #ifdef CHIPS_USE_UI
     if (ui_input(event)) {
@@ -246,8 +250,10 @@ void app_input(const sapp_event* event) {
 }
 
 #if defined(CHIPS_USE_UI)
-static void ui_draw_cb(void) {
-    ui_nes_draw(&state.ui);
+static void ui_draw_cb(const ui_draw_info_t* draw_info) {
+    ui_nes_draw(&state.ui, &(ui_nes_frame_t){
+        .display = draw_info->display,
+    });
 }
 
 static void ui_update_snapshot_screenshot(size_t slot) {

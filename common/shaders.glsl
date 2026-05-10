@@ -1,6 +1,6 @@
 @vs offscreen_vs
-in vec2 in_pos;
-in vec2 in_uv;
+layout(location=0) in vec2 in_pos;
+layout(location=1) in vec2 in_uv;
 
 layout(binding=0) uniform offscreen_vs_params {
     vec2 uv_offset;
