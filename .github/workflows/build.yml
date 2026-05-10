@@ -7,39 +7,64 @@ jobs:
         runs-on: windows-latest
         steps:
         - uses: actions/checkout@v4
-        - name: win64-vstudio-debug
-          run:  python3 fips build win64-vstudio-debug
-        - name: win64-vstudio-release
-          run:  python3 fips build win64-vstudio-release
+        - uses: denoland/setup-deno@v2
+        - name: win-msvc-debug
+          run: |
+            ./fibs config win-msvc-debug
+            ./fibs build
+            ./fibs run chips-test
+        - name: win-msvc-release
+          run: |
+            ./fibs config win-msvc-release
+            ./fibs build
     mac:
         runs-on: macos-latest
         steps:
-        - uses: actions/checkout@v4
-        - name: osx-make-debug
-          run:  python3 fips build osx-make-debug
-        - name: osx-make-release
-          run:  python3 fips build osx-make-release
+        - uses: actions/checkout@main
+        - uses: ashutoshvarma/setup-ninja@master
+        - uses: denoland/setup-deno@v2
+        - name: macos-ninja-debug
+          run: |
+            ./fibs config macos-ninja-debug
+            ./fibs build
+            ./fibs run madNES-ui
+        - name: macos-ninja-release
+          run: |
+            ./fibs config macos-ninja-release
+            ./fibs build
     linux:
         runs-on: ubuntu-latest
         steps:
-        - uses: actions/checkout@v4
+        - uses: actions/checkout@main
+        - uses: ashutoshvarma/setup-ninja@master
+        - uses: denoland/setup-deno@v2
         - name: prepare
           run:  |
             sudo apt-get update
             sudo apt-get install libglu1-mesa-dev mesa-common-dev xorg-dev libasound-dev
         - name: linux-make-debug
-          run:  python3 fips build linux-make-debug
+          run: |
+            ./fibs config linux-ninja-debug
+            ./fibs build
+            ./fibs run madNES-ui
         - name: linux-make-release
-          run:  python3 fips build linux-make-release
+          run: |
+            ./fibs config linux-ninja-release
+            ./fibs build
     emscripten:
         runs-on: ubuntu-latest
         steps:
-        - uses: actions/checkout@v4
+        - uses: actions/checkout@main
+        - uses: ashutoshvarma/setup-ninja@master
+        - uses: denoland/setup-deno@v2
         - name: install emsdk
           run: |
-            sudo apt-get install ninja-build
-            python3 fips emsdk install latest
+            ./fibs emsdk install
         - name: wasm-ninja-debug
-          run:  python3 fips build wasm-ninja-debug
+          run: |
+            ./fibs config emsc-ninja-debug
+            ./fibs build
         - name: wasm-ninja-release
-          run:  python3 fips build wasm-ninja-release
+          run: |
+            ./fibs config emsc-ninja-release
+            ./fibs build

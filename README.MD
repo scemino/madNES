@@ -5,10 +5,8 @@ A NES emulator for macOS, Linux, Windows and more.
 ## Compiling
 
 ```shell
-./fips set target madNES
-./fips gen
-./fips build
-./fips run
+./fibs build
+./fibs run madNES-ui
 ```
 
 ## Controller
